@@ -20,13 +20,19 @@ function gaussian(rand) {
 // Parkinson's. Its strength drifts a little over time, and the two axes are
 // out of phase, so the hand traces a small ellipse. A little sensor noise
 // is added on top.
-export function makeTremor({ freq = 5, amp = 6, seed = 7 } = {}) {
+//
+// `wander` (Hz) lets the frequency itself drift up and down over about six
+// seconds, which real tremors do and a clean sine wave doesn't.
+export function makeTremor({ freq = 5, amp = 6, wander = 0, seed = 7 } = {}) {
   const rand = rng(seed);
   const phase = rand() * Math.PI * 2;
   const drift = 0.3 + rand() * 0.3;
+  const period = 6;
   return (t) => {
     const envelope = 1 + 0.25 * Math.sin(2 * Math.PI * drift * t);
-    const w = 2 * Math.PI * freq * t + phase;
+    // Integrate the drifting frequency so the phase stays continuous.
+    const cycles = freq * t - (wander * period / (2 * Math.PI)) * (Math.cos((2 * Math.PI * t) / period) - 1);
+    const w = 2 * Math.PI * cycles + phase;
     return {
       dx: amp * envelope * Math.sin(w) + 0.5 * gaussian(rand),
       dy: amp * 0.8 * envelope * Math.sin(w + 1.1) + 0.5 * gaussian(rand),

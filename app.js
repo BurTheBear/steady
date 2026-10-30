@@ -1,4 +1,4 @@
-import { MovingAverage, Exponential, OneEuro, Kalman, Notch, run } from './src/filters.js';
+import { MovingAverage, Exponential, OneEuro, Kalman, Notch, AdaptiveNotch, run } from './src/filters.js';
 import {
   spiral, spiralPoint, demoStroke, makeTremor,
   intentError, lagAndWobble, meanSpiralDistance, spectrum,
@@ -43,11 +43,19 @@ const FILTERS = [
       { key: 'q', label: 'Narrowness', min: 0.3, max: 6, step: 0.1, value: 2, fmt: (v) => v.toFixed(1), grid: [0.7, 1, 1.5, 2, 3, 4, 6] },
     ],
   },
+  {
+    id: 'adapt', name: 'Adaptive notch', cls: AdaptiveNotch,
+    about: 'A notch that keeps measuring the shake and retunes itself as it drifts.',
+    params: [
+      { key: 'q', label: 'Narrowness', min: 0.3, max: 6, step: 0.1, value: 3, fmt: (v) => v.toFixed(1), grid: [1.5, 2, 3, 4, 6] },
+    ],
+  },
 ];
 
 const TREMOR_PARAMS = [
   { key: 'freq', label: 'Frequency', min: 2, max: 12, step: 0.1, value: 5, fmt: (v) => `${v.toFixed(1)} Hz` },
   { key: 'amp', label: 'Strength', min: 0, max: 16, step: 0.5, value: 6, fmt: (v) => `${v.toFixed(1)} px` },
+  { key: 'wander', label: 'Drift', min: 0, max: 2, step: 0.1, value: 0, fmt: (v) => `±${v.toFixed(1)} Hz` },
 ];
 
 const $ = (id) => document.getElementById(id);

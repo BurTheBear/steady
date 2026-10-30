@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MovingAverage, Exponential, OneEuro, Kalman, Notch, run } from '../src/filters.js';
+import { MovingAverage, Exponential, OneEuro, Kalman, Notch, AdaptiveNotch, FrequencyTracker, run } from '../src/filters.js';
 import {
   spiral, spiralPoint, spiralDistance, demoStroke, makeTremor,
   intentError, lagAndWobble, meanSpiralDistance, spectrum,
@@ -12,6 +12,7 @@ const ALL = [
   [OneEuro, { minCutoff: 1, beta: 0.01 }],
   [Kalman, { q: 1e6, r: 100 }],
   [Notch, { freq: 5, q: 2 }],
+  [AdaptiveNotch, { q: 3 }],
 ];
 
 const steady = (n, x = 100, y = 50) => Array.from({ length: n }, (_, i) => ({ t: i / 100, x, y }));
@@ -85,4 +86,29 @@ test('on a simulated tremor stroke, the Kalman and notch filters beat raw input'
   const { lagMs, wobble } = lagAndWobble(run(Exponential, { alpha: 0.1 }, samples), samples);
   assert.ok(lagMs > 30, 'heavy exponential smoothing should show clear lag');
   assert.ok(wobble < raw, 'but less wobble');
+});
+
+test('the frequency tracker follows a drifting tremor', () => {
+  const tremor = makeTremor({ freq: 5, amp: 6, wander: 1, seed: 5 });
+  const tracker = new FrequencyTracker();
+  let errSum = 0, n = 0;
+  for (let i = 0; i < 1200; i++) {
+    const t = i / 90;
+    const o = tremor(t);
+    const f = tracker.next(o.dx + o.dy, t, 1 / 90);
+    if (t > 2) { errSum += Math.abs(f - (5 + Math.sin((2 * Math.PI * t) / 6))); n++; }
+  }
+  assert.ok(errSum / n < 0.5, `average tracking error ${(errSum / n).toFixed(2)} Hz`);
+});
+
+test('the adaptive notch beats a fixed notch when the tremor drifts', () => {
+  const sp = spiral(400, 300, 250, 3);
+  const tremor = makeTremor({ freq: 5, amp: 6, wander: 1.5 });
+  const samples = demoStroke(sp).map((s) => {
+    const o = tremor(s.t);
+    return { ...s, x: s.cx + o.dx, y: s.cy + o.dy };
+  });
+  const fixed = intentError(run(Notch, { freq: 5, q: 3 }, samples), samples);
+  const adaptive = intentError(run(AdaptiveNotch, {}, samples), samples);
+  assert.ok(adaptive < fixed, `adaptive ${adaptive.toFixed(2)} vs fixed ${fixed.toFixed(2)}`);
 });

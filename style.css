@@ -15,6 +15,7 @@
   --c-euro: #1f6fd0;
   --c-kalman: #d03a2f;
   --c-notch: #13914f;
+  --c-adapt: #c2185b;
   --band: rgba(19, 145, 79, 0.1);
 }
 @media (prefers-color-scheme: dark) {
@@ -35,6 +36,7 @@
     --c-euro: #6aa9f0;
     --c-kalman: #f0776d;
     --c-notch: #4cc785;
+    --c-adapt: #f06292;
     --band: rgba(76, 199, 133, 0.12);
   }
 }

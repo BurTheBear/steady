@@ -177,3 +177,62 @@ export class Notch {
     return { t: s.t, x: this.fx.next(s.x, dt), y: this.fy.next(s.y, dt) };
   }
 }
+
+// Estimates the tremor's frequency as it goes. Two first-order high-pass
+// stages strip out the drawing motion (one stage leaves a constant offset
+// whenever the hand moves at a steady speed; the second removes it). What's
+// left is mostly shake, and counting its zero crossings over the last moment
+// gives the frequency. A small dead band stops sensor noise from counting.
+export class FrequencyTracker {
+  constructor({ window = 0.5, cutoff = 2, initial = 5, gain = 0.3 } = {}) {
+    this.window = window;
+    this.gain = gain;
+    this.cutoff = cutoff;
+    this.freq = initial;
+    this.lp1 = null;
+    this.lp2 = 0;
+    this.power = 1;
+    this.sign = 0;
+    this.crossings = [];
+  }
+
+  next(value, t, dt) {
+    if (this.lp1 === null) this.lp1 = value;
+    const a = smoothing(dt, this.cutoff);
+    this.lp1 += a * (value - this.lp1);
+    const hp1 = value - this.lp1;
+    this.lp2 += a * (hp1 - this.lp2);
+    const shake = hp1 - this.lp2;
+
+    this.power += 0.02 * (shake * shake - this.power);
+    const band = 0.4 * Math.sqrt(this.power);
+    if (this.sign <= 0 && shake > band) { this.sign = 1; this.crossings.push(t); }
+    else if (this.sign >= 0 && shake < -band) { this.sign = -1; this.crossings.push(t); }
+    while (this.crossings.length && t - this.crossings[0] > this.window) this.crossings.shift();
+
+    const n = this.crossings.length;
+    if (n >= 4) {
+      const f = (n - 1) / (2 * (this.crossings[n - 1] - this.crossings[0]));
+      if (f >= 2 && f <= 12) this.freq += this.gain * (f - this.freq);
+    }
+    return this.freq;
+  }
+}
+
+// A notch filter that retunes itself to the tracked frequency on every sample.
+export class AdaptiveNotch {
+  constructor({ q = 3, window = 0.5, gain = 0.3 } = {}) {
+    this.tracker = new FrequencyTracker({ window, gain });
+    this.fx = new Notch1D(5, q);
+    this.fy = new Notch1D(5, q);
+    this.t = null;
+  }
+
+  next(s) {
+    const dt = this.t === null ? 1 / 60 : Math.max(1e-3, s.t - this.t);
+    this.t = s.t;
+    const f = this.tracker.next(s.x + s.y, s.t, dt);
+    this.fx.freq = this.fy.freq = f;
+    return { t: s.t, x: this.fx.next(s.x, dt), y: this.fy.next(s.y, dt), freq: f };
+  }
+}
