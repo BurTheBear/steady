@@ -8,10 +8,7 @@ When I was working on [TypeParkinson](https://github.com/BurTheBear/TypeParkinso
 
 ## What it does
 
-- **Spiral test.** You trace an Archimedean spiral. This is the same shape doctors use in spiral-drawing tests for tremor. Steady measures how far each filter's version strays from it.
-- **Simulated tremor.** A 4–6 Hz wobble (the usual range for a Parkinson's rest tremor) is added on top of your pointer, so you know exactly what you *meant* to draw. That makes it possible to score error, lag and leftover wobble separately.
-- **Spectrum.** It resamples your input to 100 Hz and runs a Fourier transform to find the strongest shake frequency.
-- **Tune.** One button grid-searches each filter's settings for the stroke you just drew.
+In the spiral test you trace an Archimedean spiral, the same shape used in spiral-drawing tests for tremor, and each filter is scored on how far it strays from it. With the simulation on, a 4 to 6 Hz wobble (the usual range for a Parkinson's rest tremor) is added on top of your pointer. That means the page knows exactly what you meant to draw, so it can measure error, lag and leftover wobble separately. It also resamples your input to 100 Hz and runs a Fourier transform to find the strongest shake frequency. The Tune button tries a grid of settings for every filter and keeps the best ones for the stroke you just drew.
 
 ## The filters
 
