@@ -6,69 +6,56 @@
   <title>Steady</title>
   <meta name="description" content="Draw with a simulated (or real) tremor and compare five filters that try to steady it.">
   <meta property="og:title" content="Steady">
-  <meta property="og:description" content="Which filter best steadies a shaky hand? Draw and find out.">
+  <meta property="og:description" content="Which filter steadies a shaky hand best? Draw and find out.">
   <meta property="og:image" content="assets/screenshot.png">
-  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/bear.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="top">
-    <div class="brand">
-      <img src="assets/icon.svg" width="30" height="30" alt="">
-      <span>Steady</span>
-    </div>
-    <p class="lede">Which filter best steadies a shaky hand? Trace the spiral and compare.</p>
-    <a class="gh" href="https://github.com/BurTheBear/steady">Code</a>
+  <header>
+    <h1>Steady</h1>
+    <p>Which filter steadies a shaky hand best? Trace the spiral and compare. <a href="https://github.com/BurTheBear/steady">Source code</a></p>
   </header>
 
   <main class="layout">
     <section class="stage">
-      <div class="toolbar">
-        <div class="seg" id="mode" role="group" aria-label="Mode">
-          <button data-mode="spiral" class="on">Spiral test</button>
-          <button data-mode="free">Free draw</button>
-        </div>
-        <label class="switch"><input type="checkbox" id="simulate" checked><span></span>Simulate tremor</label>
-        <label class="switch"><input type="checkbox" id="showIntent" checked><span></span>Show intended path</label>
-        <div class="grow"></div>
-        <button class="btn" id="demo">Replay demo</button>
-        <button class="btn" id="clear">Clear</button>
-      </div>
+      <p class="toolbar">
+        <span class="group" id="mode" role="group" aria-label="Mode"><button data-mode="spiral" class="on">Spiral test</button><button data-mode="free">Free draw</button></span>
+        <label><input type="checkbox" id="simulate" checked> Simulate tremor</label>
+        <label><input type="checkbox" id="showIntent" checked> Show intended path</label>
+        <span class="right"><button id="demo">Replay demo</button> <button id="clear">Clear</button></span>
+      </p>
       <div class="canvas-wrap">
         <canvas id="canvas" aria-label="Drawing area"></canvas>
         <p class="hint" id="hint" hidden>Start in the middle and trace the spiral outward.</p>
       </div>
-      <div class="legend" id="legend"></div>
+      <p class="legend" id="legend"></p>
     </section>
 
     <aside class="side">
-      <div class="card">
-        <h2>Results</h2>
-        <table class="results" id="results"></table>
-        <p class="note" id="resultsNote"></p>
-        <button class="btn primary wide" id="tune">Tune every filter for this stroke</button>
-      </div>
+      <h2>Results</h2>
+      <table class="results" id="results"></table>
+      <p class="note" id="resultsNote"></p>
+      <p><button id="tune">Tune every filter for this stroke</button></p>
 
-      <div class="card">
-        <h2>Tremor</h2>
-        <div id="tremorControls"></div>
-        <canvas id="spectrum" class="spectrum" aria-label="Frequency spectrum of the raw input"></canvas>
-        <p class="note" id="peak"></p>
-      </div>
+      <h2>Tremor</h2>
+      <div id="tremorControls"></div>
+      <canvas id="spectrum" class="spectrum" aria-label="Frequency spectrum of the raw input"></canvas>
+      <p class="note" id="peak"></p>
 
-      <div class="card">
-        <h2>Filters</h2>
-        <div id="filterControls"></div>
-      </div>
+      <h2>Filters</h2>
+      <div id="filterControls"></div>
     </aside>
   </main>
 
-  <footer class="foot">
-    Made by <a href="https://github.com/BurTheBear">Atharv Sharma</a> while working on <a href="https://github.com/BurTheBear/TypeParkinson-CAC">TypeParkinson</a>. This is a way to explore filters. It is not a medical tool.
-  </footer>
+  <section class="about">
+    <h2>What's going on</h2>
+    <p>The grey line is what the pointer reported, with the tremor added. The dotted line is where the hand was actually going. The colored lines are the five filters. Click a row in the results table to highlight that filter.</p>
+    <p>"Error" is the average distance from the dotted line. "Lag" is how far behind it the filter runs. "Wobble" is the shake that's left once you account for the lag. With the simulation off there's no dotted line to compare against, so only the spiral score is shown.</p>
+    <p>I made this while working on <a href="https://github.com/BurTheBear/TypeParkinson-CAC">TypeParkinson</a>. It's a way to explore filters, not a medical tool.</p>
+  </section>
+
+  <footer>Made by <a href="https://burthebear.github.io">Atharv Sharma</a>.</footer>
   <script type="module" src="app.js"></script>
 </body>
 </html>

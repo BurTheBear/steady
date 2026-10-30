@@ -299,7 +299,7 @@ function renderSpectrum() {
   sctx.fillStyle = color('--band');
   sctx.fillRect(x(4), 0, x(6) - x(4), base);
   sctx.fillStyle = color('--dim');
-  sctx.font = '11px "IBM Plex Mono", monospace';
+  sctx.font = '11px -apple-system, Helvetica, Arial, sans-serif';
   for (let hz = 0; hz <= maxHz; hz += 5) sctx.fillText(`${hz} Hz`, Math.min(x(hz), cw - 34), ch - 3);
 
   const s = spectrum(state.samples);
