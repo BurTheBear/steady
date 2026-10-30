@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Steady</title>
+  <meta name="description" content="Draw with a simulated (or real) tremor and compare five filters that try to steady it.">
+  <meta property="og:title" content="Steady">
+  <meta property="og:description" content="Which filter best steadies a shaky hand? Draw and find out.">
+  <meta property="og:image" content="assets/screenshot.png">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="assets/icon.svg" width="30" height="30" alt="">
+      <span>Steady</span>
+    </div>
+    <p class="lede">Which filter best steadies a shaky hand? Trace the spiral and compare.</p>
+    <a class="gh" href="https://github.com/BurTheBear/steady">Code</a>
+  </header>
+
+  <main class="layout">
+    <section class="stage">
+      <div class="toolbar">
+        <div class="seg" id="mode" role="group" aria-label="Mode">
+          <button data-mode="spiral" class="on">Spiral test</button>
+          <button data-mode="free">Free draw</button>
+        </div>
+        <label class="switch"><input type="checkbox" id="simulate" checked><span></span>Simulate tremor</label>
+        <label class="switch"><input type="checkbox" id="showIntent" checked><span></span>Show intended path</label>
+        <div class="grow"></div>
+        <button class="btn" id="demo">Replay demo</button>
+        <button class="btn" id="clear">Clear</button>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="canvas" aria-label="Drawing area"></canvas>
+        <p class="hint" id="hint" hidden>Start in the middle and trace the spiral outward.</p>
+      </div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <aside class="side">
+      <div class="card">
+        <h2>Results</h2>
+        <table class="results" id="results"></table>
+        <p class="note" id="resultsNote"></p>
+        <button class="btn primary wide" id="tune">Tune every filter for this stroke</button>
+      </div>
+
+      <div class="card">
+        <h2>Tremor</h2>
+        <div id="tremorControls"></div>
+        <canvas id="spectrum" class="spectrum" aria-label="Frequency spectrum of the raw input"></canvas>
+        <p class="note" id="peak"></p>
+      </div>
+
+      <div class="card">
+        <h2>Filters</h2>
+        <div id="filterControls"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    Made by <a href="https://github.com/BurTheBear">Atharv Sharma</a> while working on <a href="https://github.com/BurTheBear/TypeParkinson-CAC">TypeParkinson</a>. This is a way to explore filters. It is not a medical tool.
+  </footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
