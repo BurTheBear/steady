@@ -25,16 +25,16 @@ When I was working on [TypeParkinson](https://github.com/BurTheBear/TypeParkinso
 
 ## What I found
 
-On the built-in demo (a 5 Hz, 6 px tremor while tracing the spiral at a normal pace), with each filter tuned:
+On the built-in demo (a 5 Hz, 6 px tremor while tracing the spiral at a normal pace), with each filter tuned by the Tune button:
 
 | | Error (px) | Lag (ms) | Wobble left (px) |
 |---|---:|---:|---:|
 | No filter | 5.4 | 0 | 5.4 |
 | Moving average | 5.4 | 0 | 5.4 |
-| Exponential | 5.1 | 11 | 4.8 |
-| 1€ filter | 4.6 | 22 | 4.0 |
+| Exponential | 5.1 | 11 | 4.7 |
+| 1€ filter | 4.6 | 22 | 4.1 |
 | Kalman | 3.1 | 0 | 3.1 |
-| Notch | 2.1 | 11 | 1.3 |
+| Notch | 2.0 | 11 | 1.6 |
 
 The surprise for me was that the simple filters barely help. When the hand is moving, any filter strong enough to remove a 5 Hz shake is also slow enough to fall behind, and the lag costs about as much accuracy as the shake did. The Kalman filter avoids most of that because it predicts where the hand is going. The notch filter does best, because a tremor is close to one steady frequency, so it can be cut out without slowing everything else down.
 
